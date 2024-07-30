@@ -1,0 +1,241 @@
+Installe de symfony 6.4
+Install de Webpack Encore : https://symfony.com/doc/6.4/frontend.html#webpack-encore
+ATTENTION : vérifier que Stimulus est configuré
+Install du Bundle Symfony UX REACT https://symfony.com/bundles/ux-react/current/index.html
+
+On install react js : https://symfony.com/doc/6.4/frontend/encore/reactjs.html
+https://www.youtube.com/watch?v=hSZZH_J1GeI
+
+render est deprecated :
+    // Assurez-vous que l'élément avec l'ID 'root' existe dans votre HTML
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(<App />);
+
+https://www.perplexity.ai/search/que-penses-tu-de-l-installatio-PfLdLCdfSLiBGoeVkV.H1g
+
+Install de API platform et configuration du CORS
+https://www.perplexity.ai/search/tu-est-un-expert-en-informatiq-S1dHq3SsSv2qxizHqRmVXw
+
+Création de la bdd :
+https://www.perplexity.ai/search/tu-est-un-expert-en-informatiq-S1dHq3SsSv2qxizHqRmVXw
+***************************************************
+Exemple interaction avec le backend, implémentation de api platform
+Bien sûr ! Je vais vous montrer comment créer deux composants React qui interagissent avec une API gérée par API Platform dans Symfony. Nous allons créer un composant pour lister les tâches et un autre pour ajouter une nouvelle tâche.
+
+Tout d'abord, assurons-nous que votre entité Task est bien configurée avec API Platform dans Symfony :
+
+```php
+// src/Entity/Task.php
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
+#[ApiResource]
+class Task
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column]
+    private bool $isDone = false;
+
+    // Getters and setters...
+}
+```
+
+Maintenant, créons nos composants React. Nous allons les placer dans le dossier `assets/react/components/`.
+
+1. Composant TaskList pour afficher la liste des tâches :
+
+```jsx
+// assets/react/components/TaskList.jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const TaskList = () => {
+    const [tasks, setTasks] = useState([]);
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const response = await axios.get('/api/tasks');
+                setTasks(response.data['hydra:member']);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des tâches", error);
+            }
+        };
+
+        fetchTasks();
+    }, []);
+
+    return (
+        <div>
+            <h2>Liste des tâches</h2>
+            <ul>
+                {tasks.map(task => (
+                    <li key={task.id}>
+                        {task.title} - {task.isDone ? 'Terminée' : 'En cours'}
+                        <p>{task.description}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default TaskList;
+```
+
+2. Composant TaskForm pour ajouter une nouvelle tâche :
+
+```jsx
+// assets/react/components/TaskForm.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const TaskForm = ({ onTaskAdded }) => {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('/api/tasks', {
+                title,
+                description,
+                isDone: false
+            });
+            onTaskAdded(response.data);
+            setTitle('');
+            setDescription('');
+        } catch (error) {
+            console.error("Erreur lors de l'ajout de la tâche", error);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <h2>Ajouter une tâche</h2>
+            <div>
+                <label htmlFor="title">Titre:</label>
+                <input
+                    type="text"
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                />
+            </div>
+            <div>
+                <label htmlFor="description">Description:</label>
+                <textarea
+                    id="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+            </div>
+            <button type="submit">Ajouter</button>
+        </form>
+    );
+};
+
+export default TaskForm;
+```
+
+3. Composant principal pour assembler les deux composants :
+
+```jsx
+// assets/react/components/TaskManager.jsx
+import React, { useState } from 'react';
+import TaskList from './TaskList';
+import TaskForm from './TaskForm';
+
+const TaskManager = () => {
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const handleTaskAdded = () => {
+        setRefreshKey(oldKey => oldKey + 1);
+    };
+
+    return (
+        <div>
+            <h1>Gestionnaire de tâches</h1>
+            <TaskForm onTaskAdded={handleTaskAdded} />
+            <TaskList key={refreshKey} />
+        </div>
+    );
+};
+
+export default TaskManager;
+```
+
+4. Point d'entrée React :
+
+```jsx
+// assets/react/app.js
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import TaskManager from './components/TaskManager';
+
+const container = document.getElementById('task-manager');
+const root = createRoot(container);
+root.render(<TaskManager />);
+```
+
+5. Intégration dans un template Twig :
+
+```twig
+{# templates/task/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="task-manager"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+```
+
+6. Configuration de Webpack Encore :
+
+Assurez-vous que votre `webpack.config.js` est configuré pour utiliser React et compiler votre entrée `app.js` :
+
+```javascript
+// webpack.config.js
+const Encore = require('@symfony/webpack-encore');
+
+Encore
+    // ...
+    .addEntry('app', './assets/react/app.js')
+    .enableReactPreset()
+    // ...
+;
+
+module.exports = Encore.getWebpackConfig();
+```
+
+Ces composants React interagissent avec l'API fournie par API Platform :
+- `TaskList` récupère la liste des tâches via une requête GET.
+- `TaskForm` ajoute une nouvelle tâche via une requête POST.
+- `TaskManager` gère l'état global et le rafraîchissement de la liste après l'ajout d'une tâche.
+
+N'oubliez pas d'installer les dépendances nécessaires (comme axios) et de configurer CORS si votre frontend et votre backend sont sur des domaines différents.
+
+Cette structure vous permet d'avoir une application React intégrée à Symfony, interagissant avec une API gérée par API Platform, tout en maintenant une séparation claire des responsabilités entre le frontend et le backend.
+*********************************************************************
+https://www.perplexity.ai/search/php-bin-console-doctrine-migra-KO7WJHXnTfSbUfSx4_NdUg
+
+Problme : pas d'accès à la base sql avec php bin/console doctrine:migrations:migrate
