@@ -1,4 +1,3 @@
-// assets/react/components/TaskForm.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -14,11 +13,12 @@ const TaskForm = ({ onTaskAdded }) => {
                 description,
                 isDone: false
             });
+            console.log('Nouvelle tâche ajoutée:', response.data); // Log pour déboguer
             onTaskAdded(response.data);
             setTitle('');
             setDescription('');
         } catch (error) {
-            console.error("Erreur lors de l'ajout de la tâche", error);
+            console.error("Erreur lors de l'ajout de la tâche", error.response ? error.response.data : error);
         }
     };
 

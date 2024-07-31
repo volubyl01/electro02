@@ -238,4 +238,80 @@ Cette structure vous permet d'avoir une application React intégrée à Symfony,
 *********************************************************************
 https://www.perplexity.ai/search/php-bin-console-doctrine-migra-KO7WJHXnTfSbUfSx4_NdUg
 
-Problme : pas d'accès à la base sql avec php bin/console doctrine:migrations:migrate
+Problme : pas d'accès à la base sql avec php bin/console doctrine:migrations:migrate => Réinstalle de sql et phpadmin : echec
+=> réinstall du système + sql + phpmyadmin : ok
+
+Problème : les nouveaux composants reac ne sont pas rendus.
+-> install de l'extension React dev tools pour firefox
+
+https://www.perplexity.ai/search/soltice-soltice-s300ca-documen-O7mIRS_5TwS9UEtvqkt0gg
+
+
+Axios et Api Platform : Axios et API Platform peuvent effectivement être utilisés ensemble, mais ils servent des objectifs différents dans une application web. Voici quelques points à considérer :
+
+1. Rôles complémentaires :
+   - API Platform est un framework côté serveur pour construire des API RESTful en PHP/Symfony.
+   - Axios est une bibliothèque client HTTP côté JavaScript pour effectuer des requêtes depuis le navigateur ou Node.js.
+
+2. Avantages de l'utilisation conjointe :
+   - API Platform fournit une structure robuste pour créer votre API backend.
+   - Axios simplifie les appels HTTP depuis votre frontend vers l'API créée avec API Platform.
+
+3. Cas d'utilisation typique :
+   - Vous utilisez API Platform pour définir vos endpoints API, gérer la sérialisation/désérialisation, et implémenter la logique métier côté serveur.
+   - Vous utilisez Axios dans votre application frontend (React, Vue, etc.) pour consommer l'API créée avec API Platform.
+
+4. Fonctionnalités complémentaires :
+   - API Platform gère l'authentification, la validation, la pagination côté serveur.
+   - Axios gère les intercepteurs, les transformations de données, et la gestion des erreurs côté client.
+
+5. Flexibilité :
+   - Bien qu'ils fonctionnent bien ensemble, vous n'êtes pas obligé d'utiliser les deux. API Platform peut être consommé par n'importe quel client HTTP, et Axios peut être utilisé avec n'importe quelle API RESTful.
+
+En résumé, utiliser Axios et API Platform ensemble est une bonne pratique si vous développez une application full-stack avec un backend API RESTful en PHP/Symfony et un frontend JavaScript. Cela vous permet de tirer parti des forces de chaque outil dans leur domaine respectif.
+
+Citations:
+[1] https://www.npmjs.com/package/axios/v/0.23.0?activeTab=versions
+[2] https://www.npmjs.com/search?q=axios
+[3] https://www.geeksforgeeks.org/how-to-install-axios-npm-in-terminal/
+[4] https://axios-http.com/fr/docs/intro
+[5] https://axios-http.com/docs/intro
+
+Install de prop-types (on aurait pu prendre typescript) pour typage des tas passées à TaskList
+Pour typescript :
+// TaskList.tsx
+import React from 'react';
+
+interface Task {
+  id: number | string;
+  title: string;
+  // Ajoutez d'autres propriétés si nécessaire
+}
+
+interface TaskListProps {
+  tasks: Task[];
+}
+
+const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+    console.log('TaskList reçoit:', tasks);
+
+    if (!tasks || tasks.length === 0) {
+        return <p>Aucune tâche à afficher.</p>;
+    }
+
+    return (
+        <ul>
+            {tasks.map(task => (
+                <li key={task.id}>{task.title}</li>
+            ))}
+        </ul>
+    );
+};
+
+export default TaskList;
+
+
+---------Pour pro-types :
+- Install de pro-type et : 
+
+

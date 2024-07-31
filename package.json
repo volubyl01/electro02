@@ -12,6 +12,7 @@
                 "@symfony/stimulus-bridge": "^3.2.0",
                 "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
                 "@symfony/webpack-encore": "^4.6.1",
+                "@types/react-dom": "^18.3.0",
                 "core-js": "^3.23.0",
                 "react": "^18.3.1",
                 "react-dom": "^18.3.1",
@@ -29,6 +30,7 @@
                 "build": "encore production --progress"
         },
         "dependencies": {
+                "axios": "^1.7.2",
                 "prop-types": "^15.8.1"
         }
 }
